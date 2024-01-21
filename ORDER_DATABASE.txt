@@ -1,0 +1,331 @@
+mysql> create database ORDER_DATABASE;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| movie_database     |
+| mysql              |
+| order_database     |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> USE ORDER_DATABASE;
+Database changed
+mysql> CREATE TABLE SALESMAN(
+    -> Salesman_id int primary key,
+    -> Name varchar(20),
+    -> City varchar(20),
+    -> Commission varchar(20)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DESC SALESMAN;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Salesman_id | int         | NO   | PRI | NULL    |       |
+| Name        | varchar(20) | YES  |     | NULL    |       |
+| City        | varchar(20) | YES  |     | NULL    |       |
+| Commission  | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> CREATE TABLE CUSTOMER(
+    -> Customer_id int primary key,
+    -> Cust_Name varchar(20),
+    -> City varchar(20),
+    -> Grade int,
+    -> Salesman_id int,
+    -> foreign key(Salesman_id) references SALESMAN(Salesman_id) on delete set null
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DESC CUSTOMER;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Customer_id | int         | NO   | PRI | NULL    |       |
+| Cust_Name   | varchar(20) | YES  |     | NULL    |       |
+| City        | varchar(20) | YES  |     | NULL    |       |
+| Grade       | int         | YES  |     | NULL    |       |
+| Salesman_id | int         | YES  | MUL | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE ORDERS(
+    -> Ord_No int primary key,
+    -> Purchase_Amt int,
+    -> Ord_Date date,
+    -> Customer_id int,
+    -> Salesman_id int,
+    -> foreign key(Customer_id) references CUSTOMER(Customer_id) on delete cascade,
+    -> foreign key(Salesman_id) references SALESMAN(Salesman_id) on delete cascade
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> DESC ORDERS;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| Ord_No       | int  | NO   | PRI | NULL    |       |
+| Purchase_Amt | int  | YES  |     | NULL    |       |
+| Ord_Date     | date | YES  |     | NULL    |       |
+| Customer_id  | int  | YES  | MUL | NULL    |       |
+| Salesman_id  | int  | YES  | MUL | NULL    |       |
++--------------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO SALESMAN VALUES(1000, "RAHUL", "BANGALORE", "20%");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM SALESMAN;
++-------------+-------+-----------+------------+
+| Salesman_id | Name  | City      | Commission |
++-------------+-------+-----------+------------+
+|        1000 | RAHUL | BANGALORE | 20%        |
++-------------+-------+-----------+------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO SALESMAN VALUES(2000, "ANKITA", "BANGALORE", "25%");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO SALESMAN VALUES(3000, "SHARMA", "MYSORE", "30%");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO SALESMAN VALUES(4000, "ANJALI", "DELHI", "15%");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO SALESMAN VALUES(5000, "RAJ", "HYDERABAD", "15%");
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM SALESMAN;
++-------------+--------+-----------+------------+
+| Salesman_id | Name   | City      | Commission |
++-------------+--------+-----------+------------+
+|        1000 | RAHUL  | BANGALORE | 20%        |
+|        2000 | ANKITA | BANGALORE | 25%        |
+|        3000 | SHARMA | MYSORE    | 30%        |
+|        4000 | ANJALI | DELHI     | 15%        |
+|        5000 | RAJ    | HYDERABAD | 15%        |
++-------------+--------+-----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO CUSTOMER VALUES(1, "ADYA", "BANGALORE", 100, 1000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMER;
++-------------+-----------+-----------+-------+-------------+
+| Customer_id | Cust_Name | City      | Grade | Salesman_id |
++-------------+-----------+-----------+-------+-------------+
+|           1 | ADYA      | BANGALORE |   100 |        1000 |
++-------------+-----------+-----------+-------+-------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO CUSTOMER VALUES(2, "BANU", "MANGALORE", 300, 1000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO CUSTOMER VALUES(3, "CHETAN", "CHENNAI", 400, 2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO CUSTOMER VALUES(4, "DANISH", "BANGALORE", 200, 2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO CUSTOMER VALUES(5, "ESHA", "BANGALORE", 400, 3000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMER;
++-------------+-----------+-----------+-------+-------------+
+| Customer_id | Cust_Name | City      | Grade | Salesman_id |
++-------------+-----------+-----------+-------+-------------+
+|           1 | ADYA      | BANGALORE |   100 |        1000 |
+|           2 | BANU      | MANGALORE |   300 |        1000 |
+|           3 | CHETAN    | CHENNAI   |   400 |        2000 |
+|           4 | DANISH    | BANGALORE |   200 |        2000 |
+|           5 | ESHA      | BANGALORE |   400 |        3000 |
++-------------+-----------+-----------+-------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(201, 5000, "2020-06-02", 1, 1000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|    201 |         5000 | 2020-06-02 |           1 |        1000 |
++--------+--------------+------------+-------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(202, 450, "2020-04-09", 1, 2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(203, 1000, "2020-03-15", 3, 2000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(204, 3500, "2020-07-09", 4, 3000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO ORDERS VALUES(205, 550, "2020-05-05", 2, 2000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|    201 |         5000 | 2020-06-02 |           1 |        1000 |
+|    202 |          450 | 2020-04-09 |           1 |        2000 |
+|    203 |         1000 | 2020-03-15 |           3 |        2000 |
+|    204 |         3500 | 2020-07-09 |           4 |        3000 |
+|    205 |          550 | 2020-05-05 |           2 |        2000 |
++--------+--------------+------------+-------------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*)
+    -> FROM CUSTOMER
+    -> WHERE Grade > (SELECT AVG(Grade)
+    -> FROM CUSTOMER
+    -> WHERE CITY = "BANGALORE");
++----------+
+| COUNT(*) |
++----------+
+|        3 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> SELECT Salesman_id, Name
+    -> FROM SALESMAN
+    -> WHERE Salesman_id IN (SELECT Salesman_id
+    -> FROM CUSTOMER
+    -> GROUP BY Salesman_id
+    -> HAVING COUNT(*) > 1);
++-------------+--------+
+| Salesman_id | Name   |
++-------------+--------+
+|        1000 | RAHUL  |
+|        2000 | ANKITA |
++-------------+--------+
+2 rows in set (0.01 sec)
+
+mysql> (SELECT S.Salesman_id, S.Name, C.Cust_Name
+    -> FROM SALESMAN S, CUSTOMER C
+    -> WHERE S.Salesman_id = C.Salesman_id AND S.City = C.City)
+    -> UNION
+    -> (SELECT S.Salesman_id, S.Name, C.Cust_Name
+    -> FROM SALESMAN S, CUSTOMER C
+    -> WHERE S.Salesman_id = C.Salesman_id AND S.City != C.City)
+    -> UNION
+    -> (SELECT S.Salesman_id, S.Name, "NO CUSTOMER"
+    -> FROM SALESMAN S
+    -> WHERE Salesman_id NOT IN (SELECT Salesman_id
+    -> FROM CUSTOMER));
++-------------+--------+-------------+
+| Salesman_id | Name   | Cust_Name   |
++-------------+--------+-------------+
+|        1000 | RAHUL  | ADYA        |
+|        2000 | ANKITA | DANISH      |
+|        1000 | RAHUL  | BANU        |
+|        2000 | ANKITA | CHETAN      |
+|        3000 | SHARMA | ESHA        |
+|        4000 | ANJALI | NO CUSTOMER |
+|        5000 | RAJ    | NO CUSTOMER |
++-------------+--------+-------------+
+7 rows in set (0.00 sec)
+
+mysql> CREATE VIEW highest_order AS
+    -> (SELECT Salesman_id, Purchase_Amt, Ord_Date
+    -> FROM ORDERS
+    -> WHERE (Ord_Date, Purchase_Amt) IN (SELECT Ord_Date, MAX(Purchase_Amt)
+    -> FROM ORDERS
+    -> GROUP BY Ord_Date));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT * FROM highest_order;
++-------------+--------------+------------+
+| Salesman_id | Purchase_Amt | Ord_Date   |
++-------------+--------------+------------+
+|        1000 |         5000 | 2020-06-02 |
+|        2000 |          450 | 2020-04-09 |
+|        2000 |         1000 | 2020-03-15 |
+|        3000 |         3500 | 2020-07-09 |
+|        2000 |          550 | 2020-05-05 |
++-------------+--------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM SALESMAN;
++-------------+--------+-----------+------------+
+| Salesman_id | Name   | City      | Commission |
++-------------+--------+-----------+------------+
+|        1000 | RAHUL  | BANGALORE | 20%        |
+|        2000 | ANKITA | BANGALORE | 25%        |
+|        3000 | SHARMA | MYSORE    | 30%        |
+|        4000 | ANJALI | DELHI     | 15%        |
+|        5000 | RAJ    | HYDERABAD | 15%        |
++-------------+--------+-----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|    201 |         5000 | 2020-06-02 |           1 |        1000 |
+|    202 |          450 | 2020-04-09 |           1 |        2000 |
+|    203 |         1000 | 2020-03-15 |           3 |        2000 |
+|    204 |         3500 | 2020-07-09 |           4 |        3000 |
+|    205 |          550 | 2020-05-05 |           2 |        2000 |
++--------+--------------+------------+-------------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMER;
++-------------+-----------+-----------+-------+-------------+
+| Customer_id | Cust_Name | City      | Grade | Salesman_id |
++-------------+-----------+-----------+-------+-------------+
+|           1 | ADYA      | BANGALORE |   100 |        1000 |
+|           2 | BANU      | MANGALORE |   300 |        1000 |
+|           3 | CHETAN    | CHENNAI   |   400 |        2000 |
+|           4 | DANISH    | BANGALORE |   200 |        2000 |
+|           5 | ESHA      | BANGALORE |   400 |        3000 |
++-------------+-----------+-----------+-------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> DELETE FROM SALESMAN
+    -> WHERE Salesman_id = 1000;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM SALESMAN;
++-------------+--------+-----------+------------+
+| Salesman_id | Name   | City      | Commission |
++-------------+--------+-----------+------------+
+|        2000 | ANKITA | BANGALORE | 25%        |
+|        3000 | SHARMA | MYSORE    | 30%        |
+|        4000 | ANJALI | DELHI     | 15%        |
+|        5000 | RAJ    | HYDERABAD | 15%        |
++-------------+--------+-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM ORDERS;
++--------+--------------+------------+-------------+-------------+
+| Ord_No | Purchase_Amt | Ord_Date   | Customer_id | Salesman_id |
++--------+--------------+------------+-------------+-------------+
+|    202 |          450 | 2020-04-09 |           1 |        2000 |
+|    203 |         1000 | 2020-03-15 |           3 |        2000 |
+|    204 |         3500 | 2020-07-09 |           4 |        3000 |
+|    205 |          550 | 2020-05-05 |           2 |        2000 |
++--------+--------------+------------+-------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM CUSTOMER;
++-------------+-----------+-----------+-------+-------------+
+| Customer_id | Cust_Name | City      | Grade | Salesman_id |
++-------------+-----------+-----------+-------+-------------+
+|           1 | ADYA      | BANGALORE |   100 |        NULL |
+|           2 | BANU      | MANGALORE |   300 |        NULL |
+|           3 | CHETAN    | CHENNAI   |   400 |        2000 |
+|           4 | DANISH    | BANGALORE |   200 |        2000 |
+|           5 | ESHA      | BANGALORE |   400 |        3000 |
++-------------+-----------+-----------+-------+-------------+
+5 rows in set (0.00 sec)
